@@ -1,0 +1,336 @@
+<script>
+/* Role-aware dashboard. All access control must still be enforced by the Worker. */
+const $ = id => document.getElementById(id);
+const state={user:null,quizAttempts:[],agents:[],kpis:[]};
+const ATTENDANCE_STORAGE_KEY = 'attendanceRecords';
+const OFFICE_RULES = {
+  checkInStart: '09:00',
+  checkInLatest: '09:30',
+  workEnd: '18:30',
+  requiredNetMinutes: 480,
+  halfDayMinMinutes: 240,
+  lateGraceMinutes: 0
+};
+
+function normRole(v){return String(v||'agent').toLowerCase()}
+function esc(v){return String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function arr(data,keys=[]){
+  if(Array.isArray(data)) return data;
+  if(!data || typeof data !== 'object') return [];
+  const candidates = [...keys, 'reports', 'kpis', 'results', 'data', 'rows', 'items'];
+  for(const k of candidates){ if(Array.isArray(data?.[k])) return data[k]; }
+  return [];
+}
+function parseJsonObject(value, fallback={}){
+  if(value === undefined || value === null || value === '') return fallback;
+  if(typeof value === 'string'){
+    try {
+      const parsed = JSON.parse(value);
+      return parsed && typeof parsed === 'object' ? parsed : fallback;
+    } catch {
+      return fallback;
+    }
+  }
+  if(typeof value === 'object') return value;
+  return fallback;
+}
+function normalizeKpiRow(row){
+  if(!row || typeof row !== 'object') return {};
+  const metrics = parseJsonObject(row.metrics_json ?? row.metricsJson ?? row.metrics ?? row.data ?? {});
+  return { ...row, ...metrics };
+}
+function normalizeKpiPayload(data){
+  const rows = arr(data, ['kpis','results','data','reports']).map(normalizeKpiRow);
+  if(rows.length) return rows;
+  if(data && typeof data === 'object'){
+    const nested = arr(data.reports || data.kpis || data.results || data.data, ['kpis','results','data','reports']).map(normalizeKpiRow);
+    if(nested.length) return nested;
+  }
+  return [];
+}
+function msg(text,type=''){const el=$('globalStatus');if(el){el.textContent=text;el.className='status '+type}}
+function table(elId,headers,rows,empty='No records found.'){
+  const el=$(elId);if(!rows.length){if(el){el.innerHTML=`<div class="empty">${esc(empty)}</div>`;}return}
+  if(el){el.innerHTML=`<div class="tablewrap"><table><thead><tr>${headers.map(h=>`<th>${esc(h)}</th>`).join('')}</tr></thead><tbody>${rows.map(r=>`<tr>${headers.map(h=>`<td>${esc(r[h] ?? '')}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`;}
+}
+function first(obj,keys,fallback='—'){for(const k of keys){if(obj&&obj[k]!==undefined&&obj[k]!==null&&obj[k]!=='')return obj[k]}return fallback}
+function setProfile(user){state.user=user||{};const id=first(user,['employeeId','employee_id','id'],'');const name=first(user,['fullName','full_name','name','employeeId','employee_id'],'Employee');console.log({id,name})}
+function renderKpis(rows){
+  const kpis=normalizeKpiPayload(rows);
+  const calls=kpis.reduce((s,x)=>s+(Number(first(x,['calls','total_calls','totalCalls','callsMade','assigned_leads','assignedLeads'],0))||0),0);
+  const qualified=kpis.reduce((s,x)=>s+(Number(first(x,['qualified','qualified_leads','qualifiedLeads'],0))||0),0);
+  const connected=kpis.reduce((s,x)=>s+(Number(first(x,['connected_calls','connectedCalls','connected'],0))||0),0);
+  const attempted=kpis.reduce((s,x)=>s+(Number(first(x,['attempts','total_attempts','totalAttempts','outgoing_attempts','outgoingAttempts'],0))||0),0);
+  const att=kpis.filter(k=>first(k,['attendance_pct','attendancePct'],null)!==null);
+  const panel=$('attendancePanel');
+  if(panel){panel.innerHTML=att.length?`<div class="grid">${att.slice(0,4).map(k=>`<div class="card"><div class="label">${esc(first(k,['employeeId','employee_id','fullName','full_name','name'],'Employee'))}</div><div class="value">${esc(first(k,['attendance_pct','attendancePct'],'—'))}</div></div>`).join('')}</div>`:'<div class="empty">No attendance data</div>'}
+  $('metricCalls').textContent=calls.toLocaleString();
+  $('metricQualified').textContent=qualified.toLocaleString();
+  $('metricConnected').textContent=connected.toLocaleString();
+  $('metricAttempts').textContent=attempted.toLocaleString();
+  $('metricAgents').textContent=kpis.length.toLocaleString();
+}
+function renderQuiz(attempts){const a=arr(attempts,['attempts','results','data','reports']);state.quizAttempts=a;$('metricAttempts').textContent=a.length.toLocaleString();}
+async function load(){
+  const token=window.IndiFrameAPI.getToken();if(!token){location.replace('index.html');return}
+  try{const me=await window.IndiFrameAPI.apiRequest('/api/me');setProfile(me.user||me);}
+  catch(e){window.IndiFrameAPI.clearToken();location.replace('index.html');return}
+  const role=normRole(state.user.role);let kpiLoaded=false;
+  if(role==='admin'){
+    const results=await Promise.allSettled([
+      window.IndiFrameAPI.apiRequest('/api/admin/agents'),
+      window.IndiFrameAPI.apiRequest('/api/admin/kpis'),
+      window.IndiFrameAPI.apiRequest('/api/quiz-attempts')
+    ]);
+    if(results[0].status==='fulfilled'){state.agents=arr(results[0].value,['agents','users','results','data','reports']);}
+    if(results[1].status==='fulfilled'){state.kpis=normalizeKpiPayload(results[1].value);kpiLoaded=true;}
+    if(results[2].status==='fulfilled'){renderQuiz(results[2].value);}
+    renderKpis(kpiLoaded ? state.kpis : []);
+  }
+}
+
+function parseTimeToMinutes(value){
+  if(!value) return 0;
+  const [hours, minutes] = String(value).split(':').map(Number);
+  if(Number.isNaN(hours) || Number.isNaN(minutes)) return 0;
+  return (hours * 60) + minutes;
+}
+
+function formatDuration(totalMinutes){
+  const safeMinutes = Math.max(0, Number(totalMinutes) || 0);
+  const hours = Math.floor(safeMinutes / 60);
+  const minutes = Math.floor(safeMinutes % 60);
+  const secs = Math.floor((safeMinutes % 1) * 60);
+  return `${String(hours).padStart(2,'0')}:${String(minutes).padStart(2,'0')}:${String(secs).padStart(2,'0')}`;
+}
+
+function getAttendanceBreakMinutes(){
+  const manualBreak = Number($('breakMinutes')?.value || 0);
+  const type = $('breakType')?.value || 'none';
+  const fixedBreaks = { none: 0, lunch: 45, tea: 15, bio: 10 };
+  return Math.max(0, manualBreak + (fixedBreaks[type] || 0));
+}
+
+function getAttendanceStatus(loginMinutes, breakMinutes, checkIn, checkOut){
+  const netMinutes = Math.max(0, loginMinutes - breakMinutes);
+  const checkInMinutes = parseTimeToMinutes(checkIn);
+  const checkOutMinutes = parseTimeToMinutes(checkOut);
+  const officeStart = parseTimeToMinutes(OFFICE_RULES.checkInLatest);
+  const officeEnd = parseTimeToMinutes(OFFICE_RULES.workEnd);
+
+  if(loginMinutes <= 0) return 'Absent';
+  if(netMinutes >= OFFICE_RULES.requiredNetMinutes && checkInMinutes <= officeStart && checkOutMinutes >= officeEnd) return 'Present';
+  if(checkInMinutes > officeStart) return 'Late';
+  if(netMinutes >= OFFICE_RULES.halfDayMinMinutes) return 'Half Day';
+  if(netMinutes > 0) return 'Late';
+  return 'Absent';
+}
+
+function loadStoredAttendanceRecords(){
+  try {
+    const raw = localStorage.getItem(ATTENDANCE_STORAGE_KEY);
+    return raw ? JSON.parse(raw) : [];
+  } catch {
+    return [];
+  }
+}
+
+function saveStoredAttendanceRecords(records){
+  try {
+    localStorage.setItem(ATTENDANCE_STORAGE_KEY, JSON.stringify(records));
+  } catch (error) {
+    console.warn('Attendance save failed:', error);
+  }
+}
+
+function getCurrentMonthKey(date = new Date()){
+  const d = new Date(date);
+  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`;
+}
+
+function getMonthlyPresentDays(records){
+  const month = getCurrentMonthKey();
+  return records.filter(item => {
+    if (!item || !item.date) return false;
+    const date = new Date(item.date + 'T00:00:00');
+    if (Number.isNaN(date.getTime())) return false;
+    return `${date.getFullYear()}-${String(date.getMonth()+1).padStart(2,'0')}` === month && ['Present','Late','Half Day'].includes(item.status);
+  }).length;
+}
+
+async function saveAttendanceToBackend(record){
+  const payload = {
+    ...record,
+    employeeId: state.user?.employeeId || state.user?.employee_id || state.user?.id || 'unknown',
+    employeeName: state.user?.fullName || state.user?.full_name || state.user?.name || 'Employee',
+    createdAt: new Date().toISOString()
+  };
+
+  try {
+    if (window.IndiFrameAPI && typeof window.IndiFrameAPI.apiRequest === 'function') {
+      return await window.IndiFrameAPI.apiRequest('/api/attendance', {
+        method: 'POST',
+        body: JSON.stringify(payload),
+        headers: { 'Content-Type': 'application/json' }
+      });
+    }
+
+    if (typeof fetch === 'function') {
+      const response = await fetch('/api/attendance', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify(payload)
+      });
+      if (response.ok) return await response.json();
+    }
+  } catch (error) {
+    console.warn('Backend attendance save failed, retaining local record:', error);
+  }
+
+  return { savedLocally: true };
+}
+
+function persistAttendanceRecord(record){
+  const records = loadStoredAttendanceRecords();
+  const dateKey = record.date;
+  const idx = records.findIndex(item => item.date === dateKey && (item.employeeId === record.employeeId || !item.employeeId));
+  if (idx >= 0) records[idx] = record;
+  else records.push(record);
+  saveStoredAttendanceRecords(records);
+  return record;
+}
+
+function calculateAttendance(){
+  const checkIn = $('checkInTime')?.value;
+  const checkOut = $('checkOutTime')?.value;
+
+  if(!checkIn || !checkOut){
+    $('totalLoginHours').textContent = '00:00:00';
+    $('breakTimeDisplay').textContent = '00:00:00';
+    $('netWorkingHours').textContent = '00:00:00';
+    $('attendanceStatus').textContent = 'Absent';
+    $('todayAttendanceValue').textContent = '00:00:00';
+    $('monthlyPresentDaysValue').textContent = '0';
+    return;
+  }
+
+  const loginMinutes = Math.max(0, parseTimeToMinutes(checkOut) - parseTimeToMinutes(checkIn));
+  const breakMinutes = getAttendanceBreakMinutes();
+  const netMinutes = Math.max(0, loginMinutes - breakMinutes);
+  const status = getAttendanceStatus(loginMinutes, breakMinutes, checkIn, checkOut);
+  const todayKey = new Date().toISOString().slice(0,10);
+  const attendanceRecord = {
+    id: `${Date.now()}-${Math.random().toString(16).slice(2)}`,
+    date: todayKey,
+    employeeId: state.user?.employeeId || state.user?.employee_id || state.user?.id || 'unknown',
+    employeeName: state.user?.fullName || state.user?.full_name || state.user?.name || 'Employee',
+    checkIn,
+    checkOut,
+    breakType: $('breakType')?.value || 'none',
+    breakMinutes,
+    totalLoginMinutes: loginMinutes,
+    netWorkingMinutes: netMinutes,
+    status,
+    officeRules: OFFICE_RULES
+  };
+
+  $('totalLoginHours').textContent = formatDuration(loginMinutes);
+  $('breakTimeDisplay').textContent = formatDuration(breakMinutes);
+  $('netWorkingHours').textContent = formatDuration(netMinutes);
+  $('attendanceStatus').textContent = status;
+  $('todayAttendanceValue').textContent = formatDuration(netMinutes);
+
+  const monthlyRecords = loadStoredAttendanceRecords();
+  const persisted = persistAttendanceRecord(attendanceRecord);
+  saveAttendanceToBackend(persisted).catch(()=>{});
+  const monthlyCount = getMonthlyPresentDays([...monthlyRecords, persisted]);
+  $('monthlyPresentDaysValue').textContent = String(monthlyCount);
+}
+
+function resetAttendance(){
+  $('checkInTime').value = '';
+  $('checkOutTime').value = '';
+  $('breakType').value = 'none';
+  $('breakMinutes').value = 0;
+  $('totalLoginHours').textContent = '00:00:00';
+  $('breakTimeDisplay').textContent = '00:00:00';
+  $('netWorkingHours').textContent = '00:00:00';
+  $('attendanceStatus').textContent = '—';
+  $('todayAttendanceValue').textContent = '—';
+  $('monthlyPresentDaysValue').textContent = String(getMonthlyPresentDays(loadStoredAttendanceRecords()));
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  const calculateBtn = $('calculateAttendanceBtn');
+  const resetBtn = $('resetAttendanceBtn');
+
+  const stored = loadStoredAttendanceRecords();
+  const monthlyCount = getMonthlyPresentDays(stored);
+  if ($('monthlyPresentDaysValue')) $('monthlyPresentDaysValue').textContent = String(monthlyCount);
+
+  if(calculateBtn) calculateBtn.addEventListener('click', calculateAttendance);
+  if(resetBtn) resetBtn.addEventListener('click', resetAttendance);
+});
+
+window.IndiFrameAPI = window.IndiFrameAPI || {};
+if(typeof window !== 'undefined') window.IndiFrameAPI.KPI = { arr, parseJsonObject: parseJsonObject, normalizeKpiRow, normalizeKpiPayload };
+</script>
+
+<section id="tab-attendance" class="hidden">
+  <div class="card">
+    <h2>Attendance</h2>
+
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px;margin-top:16px;">
+      <div>
+        <label for="checkInTime">Check In</label>
+        <input id="checkInTime" type="time" step="60" style="width:100%;padding:10px;border:1px solid #dfe7f5;border-radius:8px;">
+      </div>
+
+      <div>
+        <label for="checkOutTime">Check Out</label>
+        <input id="checkOutTime" type="time" step="60" style="width:100%;padding:10px;border:1px solid #dfe7f5;border-radius:8px;">
+      </div>
+
+      <div>
+        <label for="breakType">Break Type</label>
+        <select id="breakType" style="width:100%;padding:10px;border:1px solid #dfe7f5;border-radius:8px;">
+          <option value="none">None</option>
+          <option value="lunch">Lunch Break</option>
+          <option value="tea">Tea Break</option>
+          <option value="bio">Bio Break</option>
+        </select>
+      </div>
+
+      <div>
+        <label for="breakMinutes">Break Minutes</label>
+        <input id="breakMinutes" type="number" min="0" max="240" value="0" style="width:100%;padding:10px;border:1px solid #dfe7f5;border-radius:8px;">
+      </div>
+    </div>
+
+    <div style="margin-top:16px;display:flex;gap:12px;flex-wrap:wrap;align-items:center;">
+      <button id="calculateAttendanceBtn" class="btn btn-primary" type="button">Calculate Attendance</button>
+      <button id="resetAttendanceBtn" class="btn btn-outline" type="button">Reset</button>
+    </div>
+
+    <div id="attendanceResult" style="margin-top:18px;padding:14px;border:1px solid #e3e9f2;border-radius:10px;background:#f9fbff;">
+      <div><strong>Total Login Hours:</strong> <span id="totalLoginHours">00:00:00</span></div>
+      <div><strong>Break Time:</strong> <span id="breakTimeDisplay">00:00:00</span></div>
+      <div><strong>Net Working Hours:</strong> <span id="netWorkingHours">00:00:00</span></div>
+      <div><strong>Status:</strong> <span id="attendanceStatus">—</span></div>
+    </div>
+  </div>
+
+  <div class="section grid">
+    <div class="card">
+      <div class="metric-label">Today</div>
+      <div class="metric-value" id="todayAttendanceValue">—</div>
+      <div class="metric-note">Login duration minus break time</div>
+    </div>
+    <div class="card">
+      <div class="metric-label">Monthly Present Days</div>
+      <div class="metric-value" id="monthlyPresentDaysValue">—</div>
+      <div class="metric-note">Based on attendance status</div>
+    </div>
+  </div>
+</section>
