@@ -336,3 +336,112 @@ body table tbody tr:hover{background:rgba(73,205,207,.075)}
   body .card,body .section.card,body .stat-card,body .break-card,body .admin-module-card,body .cp-card{animation:none!important;transition:none!important}
   body button,body .nav-link,body svg,body .icon,body [data-icon]{transition:none!important}
 }
+
+
+/* =========================================================
+   INDIFRAME UI REFRESH — unified premium operations workspace
+   Preview-only visual layer; no application logic changes.
+   ========================================================= */
+:root{
+  --if-navy:#0b1b2b;--if-navy-deep:#071321;--if-teal:#12b8aa;
+  --if-teal-soft:rgba(18,184,170,.14);--if-canvas:#081522;
+  --if-ink:#eef8fc;--if-muted:#a7bdca;--if-line:rgba(147,190,207,.18);
+  --if-card:rgba(13,32,49,.84);--if-shadow:0 18px 48px rgba(0,0,0,.22);
+}
+html{background:#081522}
+body{color:var(--if-ink);font-family:Inter,"Segoe UI",Arial,sans-serif;line-height:1.55}
+.topbar{min-height:68px;padding:12px clamp(16px,3vw,36px);background:rgba(5,17,30,.88);border-bottom:1px solid rgba(134,206,218,.16);box-shadow:0 8px 28px rgba(0,0,0,.18);backdrop-filter:blur(18px)}
+.brand{font-size:15px;font-weight:750;letter-spacing:.01em}
+.subtitle{font-size:11px;letter-spacing:.055em;text-transform:uppercase;color:#9eb8c7}
+.topright{gap:10px}
+.badge,.logout-btn{min-height:36px;padding:8px 13px;border-radius:9px}
+.wrap{width:min(100% - 48px,1500px);max-width:1500px;margin:0 auto;padding:30px 0 54px}
+.head{align-items:center;margin:4px 0 24px;gap:18px}
+.head h1,h1{color:#f4fbff;font-size:clamp(25px,3vw,34px);font-weight:720;letter-spacing:-.045em;line-height:1.15}
+h2{color:#f0f8fc;font-size:17px;font-weight:680;letter-spacing:-.02em}
+h3{color:#e7f4f9;font-size:14px;font-weight:650}
+.muted,.note,.label,.profile{color:#a7bdca}
+.nav{gap:7px;margin:0 0 22px;padding:8px;border:1px solid var(--if-line);border-radius:14px;background:rgba(8,24,39,.76);box-shadow:0 10px 28px rgba(0,0,0,.12)}
+.nav button,.nav-link{min-height:40px;padding:9px 14px;border:1px solid transparent;border-radius:9px;background:transparent;color:#b8cbd5;font-size:12px;font-weight:620;text-decoration:none}
+.nav button:hover,.nav-link:hover{background:rgba(255,255,255,.07);border-color:rgba(157,215,225,.14);color:#fff;transform:none}
+.nav button.active{background:linear-gradient(120deg,#0c918d,#16b9aa);border-color:transparent;color:#fff;box-shadow:0 7px 18px rgba(18,184,170,.2)}
+.card,.section.card,.break-card,.admin-module-card,.login-shell,.panel{
+  background:linear-gradient(145deg,rgba(17,42,62,.94),rgba(8,23,38,.94))!important;
+  border:1px solid rgba(142,195,210,.2)!important;border-radius:15px!important;
+  box-shadow:0 14px 38px rgba(0,0,0,.2),inset 0 1px 0 rgba(255,255,255,.035)!important;
+}
+.card,.section.card,.break-card{padding:21px}
+.section.card{margin-top:16px}
+.grid{gap:14px}
+.stat-card{min-height:126px;padding:19px!important;position:relative;overflow:hidden}
+.stat-card:after{content:"";position:absolute;width:90px;height:90px;right:-35px;top:-38px;border-radius:50%;background:rgba(18,184,170,.08)}
+.label{font-size:11px;font-weight:650;letter-spacing:.065em;text-transform:uppercase}
+.value{color:#8cebe4!important;font-size:clamp(25px,2.5vw,34px);font-weight:740;letter-spacing:-.045em}
+.note{font-size:11px}
+.primary-btn,.sa-btn,.break-btn,button[type=submit]{min-height:39px;padding:9px 15px;border:1px solid #13a99f;border-radius:9px;background:linear-gradient(120deg,#0c8f8b,#12b8aa);color:#fff;font-weight:680;box-shadow:0 6px 16px rgba(18,184,170,.16);transition:transform .18s,filter .18s,box-shadow .18s}
+.primary-btn:hover,.sa-btn:hover,.break-btn:hover,button[type=submit]:hover{filter:brightness(1.1);transform:translateY(-1px);box-shadow:0 9px 20px rgba(18,184,170,.22)}
+.secondary-btn,.sa-small,.export-report{min-height:36px;padding:8px 13px;border:1px solid rgba(147,190,207,.25);border-radius:9px;background:rgba(134,174,193,.1);color:#d9edf4;font-weight:620}
+input,select,textarea,.report-filters input,.report-filters select{
+  min-height:39px;padding:9px 11px;border:1px solid rgba(147,190,207,.25)!important;
+  border-radius:9px!important;background:rgba(3,14,26,.72)!important;color:#effaff!important;font:inherit
+}
+input:focus,select:focus,textarea:focus{outline:0;border-color:#20c5b8!important;box-shadow:0 0 0 3px rgba(18,184,170,.14)!important}
+input::placeholder,textarea::placeholder{color:#809aa9}
+select option{background:#102638;color:#effaff}
+label{color:#c6d8e1}
+table{width:100%;border-collapse:separate;border-spacing:0}
+th{padding:11px 12px!important;background:rgba(100,160,180,.12)!important;color:#b9d5df!important;font-size:10px!important;font-weight:700;text-transform:uppercase;letter-spacing:.06em;border-bottom:1px solid rgba(147,190,207,.2)!important}
+td{padding:11px 12px!important;color:#dcebf1!important;font-size:12px;border-bottom:1px solid rgba(147,190,207,.12)!important}
+tbody tr:hover{background:rgba(18,184,170,.055)}
+.tablewrap,.project-table-wrap,.sa-table-wrap,.cp-table-wrap,.cp-table-wrap,.attendance-ledger-wrap{overflow:auto;border:1px solid rgba(147,190,207,.16);border-radius:11px}
+.empty{min-height:100px;color:#a7bdca}
+.alert{padding:14px 16px;border:1px solid rgba(230,180,91,.28);border-radius:11px;background:rgba(125,83,26,.16);color:#f2d9a9}
+.status,.sa-msg,.project-message,.break-message,.cp-status{font-size:12px;color:#afc5d0}
+.status.error,.sa-msg.error,.project-message.error,.break-message.error{color:#ff9b9b}
+.footer{color:#809aa9}
+body.admin-mode .wrap{width:min(100% - 44px,1580px);max-width:1580px;grid-template-columns:220px minmax(0,1fr);gap:20px}
+body.admin-mode .nav{padding:12px 9px;background:rgba(7,22,37,.88);border:1px solid var(--if-line);border-radius:15px}
+body.admin-mode .nav button,body.admin-mode .nav .nav-link{padding:11px 12px;border-radius:9px;color:#b8cbd5;font-size:12px}
+body.admin-mode .nav button.active,body.admin-mode .nav .admin-side-link.active{background:rgba(18,184,170,.16);color:#8cebe4}
+body.admin-mode #view-admin .section.card{padding:20px}
+.admin-module-card{padding:20px;text-align:left;color:#eef8fc;cursor:pointer;transition:transform .18s,border-color .18s}
+.admin-module-card:hover{transform:translateY(-2px);border-color:rgba(18,184,170,.48)!important}
+.module-icon{color:#82e7df}
+.project-layout{gap:16px}
+.project-status{padding:5px 9px;border:1px solid rgba(18,184,170,.22);background:rgba(18,184,170,.12);color:#8cebe4}
+.project-code{color:#8cebe4}
+.cp-grid{gap:13px}
+.cp-card{border:1px solid rgba(147,190,207,.2);border-radius:13px;background:linear-gradient(145deg,rgba(17,42,62,.94),rgba(8,23,38,.94));padding:17px;color:#effaff}
+.cp-card strong{color:#8cebe4}
+body:has(.login-shell){display:grid;place-items:center;padding:28px 16px!important}
+body:has(.login-shell) .login-shell{width:min(100%,470px);padding:38px!important;border-radius:20px!important}
+body:has(.login-shell) .login-shell h1{font-size:31px}
+body:has(.login-shell) .login-shell .subtitle{margin-bottom:25px}
+body:has(.login-shell) .login-shell input{height:47px}
+body:has(.login-shell) .login-shell button[type=submit]{height:47px}
+@media(max-width:980px){
+ .wrap{width:min(100% - 32px,1500px)}
+ body.admin-mode .wrap{grid-template-columns:1fr}
+ body.admin-mode .nav{min-height:0;flex-direction:row;flex-wrap:wrap}
+ body.admin-mode .head,body.admin-mode .nav,body.admin-mode #globalStatus,body.admin-mode #view-admin,body.admin-mode .footer{grid-column:1;grid-row:auto}
+}
+@media(max-width:680px){
+ .topbar{min-height:60px;padding:10px 14px;gap:9px}
+ .brand{font-size:13px}.subtitle{font-size:9px}
+ .topright{gap:6px}.badge,.logout-btn{min-height:33px;padding:7px 10px;font-size:11px}
+ .wrap{width:calc(100% - 26px);padding:20px 0 34px}
+ .head{align-items:flex-start;flex-direction:column;margin-bottom:18px}
+ .nav{margin:0 -2px 17px;flex-wrap:nowrap;overflow-x:auto;white-space:nowrap}
+ .nav button,.nav-link{flex:0 0 auto}
+ .card,.section.card,.break-card{padding:15px!important}
+ .grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
+ .stat-card{min-height:108px;padding:13px!important}
+ .value{font-size:23px}
+ .project-layout,.sa-grid{grid-template-columns:1fr}
+ .cp-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .report-filters,.cp-toolbar{align-items:stretch}
+ .report-filters label,.cp-toolbar label{flex:1 1 130px}
+ body.admin-mode .wrap{width:calc(100% - 24px)}
+ body:has(.login-shell) .login-shell{padding:29px 23px!important}
+}
+@media(prefers-reduced-motion:reduce){*,*:before,*:after{scroll-behavior:auto!important;animation:none!important;transition:none!important}}
