@@ -1,41 +1,36 @@
-/* IndiFrame Help Desk interaction + page transition layer. Visual-only; no API contract changes. */
+/* IndiFrame page loader and motion layer. Keeps business/API logic unchanged. */
 (() => {
-  if (window.__ifInteractionsReady) return;
-  window.__ifInteractionsReady = true;
-  const reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const cardSelector = '.card,.section.card,.break-card,.stat-card,.admin-module-card,.cp-card,.project-card,.sa-card,.admin-detail-bar,.metric-card';
-  const bindCards = () => document.querySelectorAll(cardSelector).forEach(card => {
-    if(card.dataset.ifMotionBound)return;card.dataset.ifMotionBound='1';
-    card.addEventListener('pointermove',e=>{const r=card.getBoundingClientRect();card.style.setProperty('--if-pointer-x',(e.clientX-r.left)+'px');card.style.setProperty('--if-pointer-y',(e.clientY-r.top)+'px')},{passive:true});
-  });
-  const reveal = () => {
-    if(reduce||!('IntersectionObserver'in window))return;
-    const targets=document.querySelectorAll('.card,.section.card,.break-card,.stat-card,.admin-module-card,.cp-card,.project-card,.sa-card');
-    const io=new IntersectionObserver(entries=>entries.forEach(entry=>{if(entry.isIntersecting){entry.target.classList.add('if-visible');io.unobserve(entry.target)}}),{threshold:.06,rootMargin:'0px 0px -18px 0px'});
-    targets.forEach((el,i)=>{if(!el.classList.contains('if-reveal')){el.classList.add('if-reveal');el.style.transitionDelay=(Math.min(i%4,3)*35)+'ms'}io.observe(el)});
+ if(window.__ifInteractionsReady)return;window.__ifInteractionsReady=true;
+ const reduced=matchMedia('(prefers-reduced-motion: reduce)').matches;
+ let overlay,requestCount=0,initialDone=false,minimumDone=false,hideTimer;
+ const makeLoader=()=>{
+  if(overlay)return overlay;
+  overlay=document.createElement('div');overlay.id='ifPageLoader';overlay.className='if-page-loader';overlay.setAttribute('role','status');overlay.setAttribute('aria-live','polite');
+  overlay.innerHTML='<div class="if-loader-card"><div class="if-loader-symbol"><span></span><span></span><span></span><span></span></div><div class="if-loader-brand">INDIFRAME</div><div class="if-loader-title">Preparing your workspace</div><div class="if-loader-sub">Precision in every detail</div><div class="if-loader-track"><i></i></div></div>';
+  document.body.appendChild(overlay);return overlay;
+ };
+ const show=()=>{makeLoader();overlay.classList.remove('if-loader-done');document.body.classList.add('if-loading')};
+ const hide=()=>{if(requestCount>0||!initialDone||!minimumDone)return;document.body.classList.remove('if-loading');overlay?.classList.add('if-loader-done')};
+ const start=()=>{show();setTimeout(()=>{minimumDone=true;hide()},reduced?100:650)};
+ const completeInitial=()=>{initialDone=true;hide()};
+ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',start,{once:true});else start();
+ if(document.readyState==='complete')completeInitial();else window.addEventListener('load',completeInitial,{once:true});
+ setTimeout(()=>{initialDone=true;minimumDone=true;if(requestCount===0)hide()},6000);
+ // Keep one overlay in DOM so later fetches can show it again. Concurrent requests are counted.
+ if(window.fetch&&!window.__ifFetchWrapped){
+  const nativeFetch=window.fetch.bind(window);window.__ifFetchWrapped=true;
+  window.fetch=function(...args){
+   requestCount++;show();
+   return nativeFetch(...args).finally(()=>{requestCount=Math.max(0,requestCount-1);if(requestCount===0){if(initialDone)minimumDone=true;clearTimeout(hideTimer);hideTimer=setTimeout(hide,180)}});
   };
-  const setupLoader=()=>{
-    if(document.getElementById('ifPageLoader'))return;
-    const overlay=document.createElement('div');overlay.id='ifPageLoader';overlay.className='if-page-loader';overlay.setAttribute('role','status');overlay.setAttribute('aria-live','polite');
-    overlay.innerHTML='<div class="if-loader-card"><div class="if-loader-symbol"><span></span><span></span><span></span><span></span></div><div class="if-loader-brand">INDIFRAME</div><div class="if-loader-title">Preparing your workspace</div><div class="if-loader-sub">Precision in every detail</div><div class="if-loader-track"><i></i></div></div>';
-    document.body.appendChild(overlay);document.body.classList.add('if-loading');
-    let finished=false,requests=0,hideTimer;
-    const hide=()=>{if(finished)return;finished=true;document.body.classList.remove('if-loading');overlay.classList.add('if-loader-done');setTimeout(()=>overlay.remove(),550)};
-    const initial=()=>{clearTimeout(hideTimer);hideTimer=setTimeout(hide,reduce?100:720)};
-    if(document.readyState==='complete')initial();else window.addEventListener('load',initial,{once:true});
-    setTimeout(hide,4500);
-    if(window.fetch&&!window.__ifFetchWrapped){
-      const original=window.fetch.bind(window);window.__ifFetchWrapped=true;
-      window.fetch=(...args)=>{
-        requests++;overlay.classList.remove('if-loader-done');overlay.style.display='grid';document.body.classList.add('if-loading');
-        return original(...args).finally(()=>{requests=Math.max(0,requests-1);if(requests===0){clearTimeout(hideTimer);hideTimer=setTimeout(()=>{if(finished){document.body.classList.remove('if-loading');overlay.classList.add('if-loader-done');setTimeout(()=>{if(overlay.isConnected)overlay.style.display='none'},500)}else hide()},220)}});
-      };
-    }
-  };
-  const init=()=>{bindCards();reveal();setupLoader();if(document.body.classList.contains('admin-mode'))document.body.classList.add('if-admin');else if(location.pathname.endsWith('dashboard.html'))document.body.classList.add('if-agent');if(location.pathname.endsWith('superadmin.html'))document.body.classList.add('if-superadmin')};
-  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init,{once:true});else init();
-  const observer=new MutationObserver(()=>{bindCards();reveal();if(document.body.classList.contains('admin-mode')){document.body.classList.remove('if-agent');document.body.classList.add('if-admin')}});
-  const startObserver=()=>observer.observe(document.body,{childList:true,subtree:true,attributes:true,attributeFilter:['class']});
-  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',startObserver,{once:true});else startObserver();
-  setTimeout(()=>observer.disconnect(),20000);
+ }
+ const bindCards=()=>document.querySelectorAll('.card,.section.card,.break-card,.stat-card,.admin-module-card,.cp-card,.project-card,.sa-card,.admin-detail-bar,.metric-card').forEach(el=>{
+  if(el.dataset.ifMotionBound)return;el.dataset.ifMotionBound='1';
+  el.addEventListener('pointermove',e=>{const r=el.getBoundingClientRect();el.style.setProperty('--if-pointer-x',(e.clientX-r.left)+'px');el.style.setProperty('--if-pointer-y',(e.clientY-r.top)+'px')},{passive:true});
+ });
+ const reveal=()=>{if(reduced||!('IntersectionObserver'in window))return;const els=document.querySelectorAll('.card,.section.card,.break-card,.stat-card,.cp-card,.project-card,.sa-card');const io=new IntersectionObserver(entries=>entries.forEach(x=>{if(x.isIntersecting){x.target.classList.add('if-visible');io.unobserve(x.target)}}),{threshold:.04});els.forEach((el,i)=>{el.classList.add('if-reveal');el.style.transitionDelay=(i%4*35)+'ms';io.observe(el)})};
+ const init=()=>{makeLoader();bindCards();reveal();if(document.body.classList.contains('admin-mode'))document.body.classList.add('if-admin');if(location.pathname.endsWith('superadmin.html'))document.body.classList.add('if-superadmin')};
+ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init,{once:true});else init();
+ const mo=new MutationObserver(()=>{bindCards();if(document.body.classList.contains('admin-mode'))document.body.classList.add('if-admin')});
+ mo.observe(document.documentElement,{subtree:true,childList:true,attributes:true,attributeFilter:['class']});setTimeout(()=>mo.disconnect(),30000);
 })();

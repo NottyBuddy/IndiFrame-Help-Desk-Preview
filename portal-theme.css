@@ -484,3 +484,53 @@ body.if-admin .if-loader-sub,body.if-agent .if-loader-sub,body.if-superadmin .if
 .if-loader-done{opacity:0;visibility:hidden;pointer-events:none}
 body.if-loading>:not(#ifPageLoader){filter:blur(3px);transition:filter .25s ease}
 @media(prefers-reduced-motion:reduce){.if-loader-symbol span,.if-loader-track i{animation:none}.if-loader-track i{width:100%}}
+
+
+/* ===== Corrected page-level theme selectors (loaded after dashboard.css) ===== */
+body:not(.if-login-page){background:#f5f3ed!important;color:#25343d!important}
+body:not(.if-login-page) .wrap{color:inherit}
+body:not(.if-login-page) .head h1,body:not(.if-login-page) main h1,body:not(.if-login-page) main h2,body:not(.if-login-page) main h3{color:#69b9df!important}
+body:not(.if-login-page) .card,body:not(.if-login-page) .section,body:not(.if-login-page) .break-card,body:not(.if-login-page) .cp-card,body:not(.if-login-page) .project-form,body:not(.if-login-page) .project-layout>section,body:not(.if-login-page) .sa-grid>section,body:not(.if-login-page) .admin-report-grid>.section.card,body:not(.if-login-page) .stat-card{background:#fffefa!important;color:#26343c!important;border:1px solid #e7e1d8!important;box-shadow:0 8px 24px rgba(32,43,48,.055)!important}
+body:not(.if-login-page) .topbar{background:#fffefa!important;color:#26343c!important;border-bottom:1px solid #e7e1d8!important}
+body:not(.if-login-page) .topbar .brand{color:#26343c!important}
+body:not(.if-login-page) .subtitle,body:not(.if-login-page) .muted,body:not(.if-login-page) .note{color:#73818a!important}
+body:not(.if-login-page) .nav button,body:not(.if-login-page) .nav-link,body:not(.if-login-page) .logout-btn,body:not(.if-login-page) .secondary-btn{background:#fffefa!important;color:#354751!important;border:1px solid #e4ded4!important}
+body:not(.if-login-page) .nav button.active,body:not(.if-login-page) .primary-btn,body:not(.if-login-page) .break-btn,body:not(.if-login-page) .sa-btn{background:#f3a36c!important;color:#30251f!important;border-color:#f3a36c!important}
+body:not(.if-login-page) button:not(:disabled):hover,body:not(.if-login-page) .nav-link:hover{background:#ffd0ad!important;color:#29231f!important;box-shadow:0 8px 24px rgba(235,143,85,.2)!important}
+body:not(.if-login-page) input,body:not(.if-login-page) select,body:not(.if-login-page) textarea{background:#fffefa!important;color:#26343c!important;border:1px solid #dedbd4!important}
+body:not(.if-login-page) table th{color:#65b8df!important}
+body:not(.if-login-page) table td{color:#34434b!important}
+body.admin-mode,body.if-superadmin{background:#111820!important;color:#e9eef1!important}
+body.admin-mode .topbar,body.if-superadmin .topbar{background:#151d25!important;color:#edf2f5!important;border-color:rgba(255,255,255,.09)!important}
+body.admin-mode .topbar .brand,body.if-superadmin .topbar .brand{color:#f4f3ee!important}
+body.admin-mode .head h1,body.admin-mode main h1,body.admin-mode main h2,body.admin-mode main h3,body.if-superadmin main h1,body.if-superadmin main h2,body.if-superadmin main h3{color:#8cc9e8!important}
+body.admin-mode .card,body.admin-mode .section,body.admin-mode .stat-card,body.admin-mode .admin-report-grid>.section.card,body.if-superadmin .card,body.if-superadmin .section,body.if-superadmin .sa-grid>section{background:#202831!important;color:#e9eef1!important;border:1px solid rgba(255,255,255,.09)!important;box-shadow:0 12px 30px rgba(0,0,0,.2)!important}
+body.admin-mode .muted,body.admin-mode .subtitle,body.if-superadmin .muted,body.if-superadmin .subtitle{color:#a9b5bc!important}
+body.admin-mode .nav button,body.admin-mode .nav-link,body.admin-mode .logout-btn,body.if-superadmin .logout-btn{background:#202a34!important;color:#dce5ea!important;border-color:#34424d!important}
+body.admin-mode .nav button.active,body.admin-mode .primary-btn,body.if-superadmin .sa-btn{background:#f3a36c!important;color:#28231f!important;border-color:#f3a36c!important}
+body.admin-mode input,body.admin-mode select,body.admin-mode textarea,body.if-superadmin input,body.if-superadmin select{background:#18212a!important;color:#edf2f5!important;border-color:#3a4852!important}
+body.admin-mode table td,body.if-superadmin table td{color:#e3e9ed!important;border-color:#34414a!important}
+body.admin-mode table th,body.if-superadmin table th{color:#8cc9e8!important}
+body.if-superadmin{background-image:radial-gradient(ellipse at 50% -10%,rgba(79,157,190,.16),transparent 55%),linear-gradient(rgba(132,171,189,.035) 1px,transparent 1px),linear-gradient(90deg,rgba(132,171,189,.035) 1px,transparent 1px)!important;background-size:auto,40px 40px,40px 40px!important}
+body.admin-mode .wrap,body.if-superadmin .wrap{position:relative}
+body.if-login-page{padding:0!important;display:block!important;background:#f5f3ed!important}
+body.if-login-page .if-login-layout{min-height:calc(100vh - 48px)}
+.if-login-layout{min-height:760px}
+.if-install-svg{height:74%;top:4%}
+.if-install-caption{bottom:30px}
+.if-install-caption h2{color:#f5f3ed!important}
+.if-login-panel{min-width:0}
+.if-login-content form{display:grid;gap:0}
+.if-login-content #loginButton{margin-top:8px}
+.if-login-page .if-login-layout{animation:if-login-enter .75s cubic-bezier(.2,.72,.22,1) both}
+@keyframes if-login-enter{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+@media(max-width:900px){.if-login-layout{min-height:0}.if-login-visual{min-height:510px}}
+@media(max-width:560px){body.if-login-page{padding:0!important}.if-login-visual{min-height:430px}}
+/* Loader covers full app, blurs page, and supports concurrent network requests */
+body.if-loading{overflow:hidden}
+body.if-loading>*:not(#ifPageLoader){filter:blur(7px)!important;transform:translateZ(0);pointer-events:none;user-select:none}
+#ifPageLoader{position:fixed!important;inset:0!important;z-index:2147483000!important;display:grid!important;place-items:center!important;background:rgba(245,243,237,.72)!important;backdrop-filter:blur(16px) saturate(.72)!important;-webkit-backdrop-filter:blur(16px) saturate(.72)!important;opacity:1;visibility:visible;pointer-events:all}
+body.admin-mode #ifPageLoader,body.if-superadmin #ifPageLoader{background:rgba(10,16,22,.72)!important}
+#ifPageLoader.if-loader-done{opacity:0!important;visibility:hidden!important;pointer-events:none!important}
+.if-loader-card{transform:translateY(0);animation:if-loader-card-in .45s ease both}
+@keyframes if-loader-card-in{from{opacity:0;transform:translateY(10px) scale(.97)}to{opacity:1;transform:translateY(0) scale(1)}}
