@@ -34,3 +34,15 @@
  const mo=new MutationObserver(()=>{bindCards();if(document.body.classList.contains('admin-mode'))document.body.classList.add('if-admin')});
  mo.observe(document.documentElement,{subtree:true,childList:true,attributes:true,attributeFilter:['class']});setTimeout(()=>mo.disconnect(),30000);
 })();
+
+/* Indinext house scene: rotate weather seasons and daylight/night ambience */
+(() => {
+ const scene=document.querySelector('.if-login-visual');if(!scene||scene.dataset.indinextCycle)return;
+ scene.dataset.indinextCycle='1';
+ const seasons=['clear','summer','rain','winter'];let season=0,night=false;
+ const label=scene.querySelector('.if-weather-label');
+ const paint=()=>{const state=night?'night':seasons[season];scene.dataset.season=state;if(label)label.textContent=(night?'NIGHT · ': 'DAY · ')+({clear:'MILD WEATHER',summer:'SUMMER · BRIGHT SUN',rain:'MONSOON · RAIN',winter:'WINTER · SNOWFALL'}[seasons[season]]||'MOONLIT SKY')};
+ paint();
+ setInterval(()=>{if(!night){season=(season+1)%seasons.length}else{night=false;season=(season+1)%seasons.length}paint()},12000);
+ setInterval(()=>{night=!night;paint()},26000);
+})();

@@ -577,3 +577,38 @@ body.admin-mode input,body.admin-mode select,body.admin-mode textarea{background
 .if-install-caption{background:linear-gradient(110deg,rgba(8,15,21,.92),rgba(8,15,21,.52))}
 @media(max-width:900px){body.if-superadmin .sa-grid{grid-template-columns:1fr}}
 @media(prefers-reduced-motion:reduce){.if-install-svg *{animation:none!important}}
+
+/* Indinext seasonal house scene */
+.if-season-sky{position:absolute;inset:0;z-index:0;overflow:hidden;pointer-events:none;transition:background 2s ease}
+.if-house-scene{position:relative;z-index:2;width:100%;height:auto;overflow:visible}
+.if-house-building{transform-origin:50% 100%;animation:if-house-arrive 1.2s ease-out both}
+@keyframes if-house-arrive{from{opacity:0;transform:translateY(28px) scale(.97)}to{opacity:1;transform:translateY(0) scale(1)}}
+.if-window-unit{transform-box:fill-box;transform-origin:50% 0;animation:if-window-lower 1.4s 1s cubic-bezier(.2,.8,.2,1) both}
+.if-door-unit{transform-box:fill-box;transform-origin:50% 0;animation:if-door-place 1.35s 2.2s cubic-bezier(.2,.8,.2,1) both}
+.if-glass-window{opacity:0;animation:if-glass-in .9s 2.5s ease-out forwards}
+.if-glass-door{opacity:0;animation:if-glass-in .9s 2.85s ease-out forwards}
+.if-window-lock,.if-door-handle,.if-handle-lock{opacity:0;animation:if-lock-fit .6s 3.7s cubic-bezier(.2,.8,.2,1) forwards}
+.if-door-leaf{transform-box:fill-box;transform-origin:0% 50%;animation:if-house-door-swing 4s 4.5s ease-in-out infinite alternate}
+@keyframes if-window-lower{0%{opacity:0;transform:translateY(-190px)}75%{opacity:1;transform:translateY(9px)}100%{opacity:1;transform:translateY(0)}}
+@keyframes if-door-place{0%{opacity:0;transform:translateX(190px)}75%{opacity:1;transform:translateX(-7px)}100%{opacity:1;transform:translateX(0)}}
+@keyframes if-glass-in{0%{opacity:0;transform:translateY(24px) scale(.9)}100%{opacity:1;transform:translateY(0) scale(1)}}
+@keyframes if-lock-fit{0%{opacity:0;transform:scale(.15) rotate(-65deg)}75%{opacity:1;transform:scale(1.16) rotate(6deg)}100%{opacity:1;transform:scale(1) rotate(0)}}
+@keyframes if-house-door-swing{0%,30%{transform:perspective(650px) rotateY(0)}70%,100%{transform:perspective(650px) rotateY(-25deg)}}
+.if-season-sky:before{content:"";position:absolute;inset:0;background:radial-gradient(circle at 78% 17%,rgba(255,221,151,.3),transparent 17%);opacity:.8;transition:all 2s}
+.if-sun,.if-moon{position:absolute;right:13%;top:12%;width:54px;height:54px;border-radius:50%;background:#ffd58b;box-shadow:0 0 45px 14px rgba(255,190,104,.3);transition:all 2s}
+.if-moon{opacity:0;background:#e3efff;box-shadow:0 0 38px 10px rgba(177,205,255,.25)}
+.if-weather-particles{position:absolute;inset:-20%;opacity:0;transition:opacity 1.5s}
+.if-weather-label{position:absolute;top:22px;right:24px;color:#d7eaf0;font-size:10px;letter-spacing:2px;text-transform:uppercase;opacity:.75}
+.if-login-visual[data-season="summer"] .if-season-sky:before{background:linear-gradient(115deg,rgba(255,190,96,.13),rgba(255,225,166,.05));}
+.if-login-visual[data-season="summer"] .if-sun{transform:scale(1.25);box-shadow:0 0 65px 25px rgba(255,176,71,.36)}
+.if-login-visual[data-season="rain"] .if-weather-particles{opacity:.65;background:repeating-linear-gradient(105deg,transparent 0 17px,rgba(171,215,238,.65) 18px,transparent 20px 31px);animation:if-rain-fall .55s linear infinite}
+.if-login-visual[data-season="winter"] .if-weather-particles{opacity:.9;background-image:radial-gradient(circle,#fff 1.5px,transparent 2px),radial-gradient(circle,#d9efff 2px,transparent 2.5px);background-size:47px 53px,73px 81px;background-position:0 0,23px 18px;animation:if-snow-fall 5s linear infinite}
+.if-login-visual[data-season="winter"] .if-season-sky:before{background:linear-gradient(135deg,rgba(170,211,245,.2),rgba(215,235,255,.08))}
+.if-login-visual[data-season="night"] .if-sun{opacity:0;transform:translateY(30px)}
+.if-login-visual[data-season="night"] .if-moon{opacity:1}
+.if-login-visual[data-season="night"] .if-season-sky:before{background:linear-gradient(120deg,rgba(4,13,34,.65),rgba(17,35,62,.38))}
+.if-login-visual[data-season="night"] .if-weather-label{color:#c9d9f6}
+@keyframes if-rain-fall{from{transform:translateY(-35px)}to{transform:translateY(35px)}}
+@keyframes if-snow-fall{from{transform:translateY(-40px) translateX(0)}to{transform:translateY(55px) translateX(22px)}}
+.if-install-caption span:first-child{letter-spacing:2px}
+@media(prefers-reduced-motion:reduce){.if-house-building,.if-window-unit,.if-door-unit,.if-glass-window,.if-glass-door,.if-window-lock,.if-door-handle,.if-handle-lock,.if-door-leaf,.if-weather-particles{animation:none!important;opacity:1!important;transform:none!important}}
