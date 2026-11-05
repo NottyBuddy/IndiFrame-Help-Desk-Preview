@@ -534,3 +534,46 @@ body.admin-mode #ifPageLoader,body.if-superadmin #ifPageLoader{background:rgba(1
 #ifPageLoader.if-loader-done{opacity:0!important;visibility:hidden!important;pointer-events:none!important}
 .if-loader-card{transform:translateY(0);animation:if-loader-card-in .45s ease both}
 @keyframes if-loader-card-in{from{opacity:0;transform:translateY(10px) scale(.97)}to{opacity:1;transform:translateY(0) scale(1)}}
+;
+/* ===== Reference-specific inner portal designs ===== */
+body.if-superadmin{background:#090d13!important;color:#e8edf1!important}
+body.if-superadmin:before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;background:radial-gradient(circle at 50% 38%,rgba(242,111,55,.16),transparent 24%),repeating-radial-gradient(circle at 50% 38%,transparent 0 42px,rgba(104,184,211,.09) 43px 44px,transparent 45px 67px),linear-gradient(120deg,#080d14,#111923 55%,#080d13)!important;opacity:1!important}
+body.if-superadmin .wrap{max-width:1500px!important}body.if-superadmin .head{padding:30px 0 18px;border-bottom:1px solid rgba(255,255,255,.08)}body.if-superadmin .head h1{font-size:30px;color:#e8f0f3!important}
+body.if-superadmin .sa-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}
+body.if-superadmin .card,body.if-superadmin .sa-grid>.card{background:linear-gradient(145deg,rgba(27,37,48,.97),rgba(14,21,29,.99))!important;border:1px solid rgba(108,190,216,.2)!important;border-radius:16px!important;box-shadow:0 16px 45px rgba(0,0,0,.3)!important;color:#eaf0f3!important}
+body.if-superadmin .sa-grid>.card:first-child{border-top:2px solid #f28c57!important}body.if-superadmin .sa-grid>.card:nth-child(2){border-top:2px solid #64c5df!important}
+body.if-superadmin .sa-grid>.card h2,body.if-superadmin .sa-grid>.card h3{color:#f2a071!important}body.if-superadmin .sa-btn{background:linear-gradient(110deg,#f28b55,#f5ad78)!important;color:#201b18!important;border:0!important;border-radius:8px!important}
+body.if-superadmin table th{color:#7ecbe3!important;background:#17232e}body.if-superadmin table td{color:#e2e9ed!important;border-color:rgba(255,255,255,.07)!important}
+body.if-agent{background:#292b2e!important;color:#f1f1f1!important}body.if-agent:before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;background:radial-gradient(ellipse at 15% 0%,rgba(255,255,255,.045),transparent 38%),linear-gradient(180deg,#292b2e,#242629)!important;opacity:1!important}
+body.if-agent .topbar{background:#292b2e!important;border-bottom:1px solid rgba(255,255,255,.08)!important;box-shadow:none!important;color:#f5f5f5!important}body.if-agent .topbar .brand,body.if-agent .topbar .subtitle{color:#f2f2f2!important}
+body.if-agent .wrap{max-width:1500px!important}body.if-agent .head h1{font-size:30px;color:#f5f5f5!important}body.if-agent .head .muted,body.if-agent .muted,body.if-agent .subtitle{color:#c0c2c4!important}
+body.if-agent .nav-link{background:#34373a!important;color:#d9dcde!important;border:1px solid rgba(255,255,255,.07)!important;border-radius:8px!important}body.if-agent .nav-link.active{background:#45484c!important;color:white!important;border-color:#777!important}
+body.if-agent .card,body.if-agent .section,body.if-agent .stat-card,body.if-agent .admin-module-card,body.if-agent .admin-detail-bar{background:#343639!important;color:#f2f2f2!important;border:1px solid rgba(255,255,255,.06)!important;border-radius:10px!important;box-shadow:0 7px 20px rgba(0,0,0,.14)!important}
+body.if-agent .card h2,body.if-agent .card h3,body.if-agent .section h2,body.if-agent .section h3{color:#f4f4f4!important}body.if-agent .stat-card .value{color:#f7f7f7!important}body.if-agent .stat-card .label,body.if-agent .stat-card .note{color:#bfc2c5!important}
+body.if-agent table th{background:#2d3033!important;color:#c4c8ca!important}body.if-agent table td{color:#eceeef!important;border-color:rgba(255,255,255,.08)!important}
+body.if-agent input,body.if-agent select,body.if-agent textarea{background:#292c2f!important;color:#f5f5f5!important;border:1px solid #505357!important}body.if-agent .primary-btn{background:#5650b8!important;color:#fff!important;border:0!important}
+body.admin-mode{background:#080f1d!important;color:#e9eef6!important}body.admin-mode:before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;background:radial-gradient(ellipse at 55% -10%,rgba(39,81,139,.22),transparent 55%),linear-gradient(135deg,#080f1d,#0b1424 60%,#080e19)!important;opacity:1!important}
+body.admin-mode .topbar{background:#0b1424!important;border-bottom:1px solid #1d2a3c!important;color:#eaf0f7!important}body.admin-mode .topbar .brand,body.admin-mode .topbar .subtitle{color:#eaf0f7!important}body.admin-mode .head h1{color:#f2f4f7!important}body.admin-mode .head .muted,body.admin-mode .muted,body.admin-mode .subtitle{color:#98a9bd!important}
+body.admin-mode .nav-link{background:#111d30!important;color:#b9c6d7!important;border:1px solid #1d2b40!important;border-radius:7px!important}body.admin-mode .nav-link.active{background:#f07b35!important;color:#101722!important;border-color:#f07b35!important}
+body.admin-mode .card,body.admin-mode .section,body.admin-mode .stat-card,body.admin-mode .admin-module-card,body.admin-mode .admin-detail-bar{background:linear-gradient(145deg,#111d30,#0e192a)!important;color:#e9eff6!important;border:1px solid #1d2c42!important;border-radius:11px!important;box-shadow:0 10px 28px rgba(0,0,0,.22)!important}
+body.admin-mode .card h2,body.admin-mode .card h3,body.admin-mode .section h2,body.admin-mode .section h3{color:#e9eff6!important}body.admin-mode .stat-card .value{color:#ff985b!important}
+body.admin-mode table th{background:#15233a!important;color:#f29a63!important}body.admin-mode table td{color:#dbe4ef!important;border-color:#223149!important}
+body.admin-mode input,body.admin-mode select,body.admin-mode textarea{background:#0b1627!important;color:#eaf0f7!important;border:1px solid #293950!important}body.admin-mode .primary-btn,body.admin-mode .export-report{background:#ef7c37!important;color:#101722!important;border:0!important}
+/* staged window + door assembly: frame arrives, glazing seats, handle fits, door swings */
+.if-install-svg .if-window-unit{transform-box:fill-box;transform-origin:center;animation:if-window-install 1.2s .25s cubic-bezier(.2,.8,.2,1) both}
+.if-install-svg .if-door-unit{transform-box:fill-box;transform-origin:center;animation:if-door-install 1.2s 1.1s cubic-bezier(.2,.8,.2,1) both}
+.if-install-svg .if-glass-window{transform-box:fill-box;transform-origin:center;animation:if-glass-seat .85s 1.9s cubic-bezier(.2,.8,.2,1) both}
+.if-install-svg .if-glass-door{transform-box:fill-box;transform-origin:center;animation:if-glass-seat .85s 2.25s cubic-bezier(.2,.8,.2,1) both}
+.if-install-svg .if-handle{transform-box:fill-box;transform-origin:center;animation:if-hardware-seat .5s 2.9s ease-out both}
+.if-install-svg .if-door-leaf{transform-box:fill-box;transform-origin:0 50%;animation:if-door-swing 2.8s 3.6s ease-in-out infinite alternate}
+.if-install-svg .if-install-glow{animation:if-install-glow 2.2s ease-in-out infinite}
+.if-install-svg .if-measure,.if-install-svg .if-install-beam,.if-install-label{display:none!important}
+@keyframes if-window-install{0%{opacity:0;transform:translateY(-100px) scale(.93)}70%{opacity:1;transform:translateY(7px)}100%{opacity:1;transform:translateY(0)}}
+@keyframes if-door-install{0%{opacity:0;transform:translateX(115px) scale(.94)}72%{opacity:1;transform:translateX(-5px)}100%{opacity:1;transform:translateX(0)}}
+@keyframes if-glass-seat{0%{opacity:0;transform:translateY(60px) scale(.88)}100%{opacity:1;transform:translateY(0) scale(1)}}
+@keyframes if-hardware-seat{0%{opacity:0;transform:scale(.1) rotate(-90deg)}75%{opacity:1;transform:scale(1.2) rotate(8deg)}100%{opacity:1;transform:scale(1) rotate(0)}}
+@keyframes if-door-swing{0%{transform:perspective(600px) rotateY(0)}100%{transform:perspective(600px) rotateY(-24deg)}}
+@keyframes if-install-glow{0%,100%{opacity:.25}50%{opacity:.95}}
+.if-install-caption{background:linear-gradient(110deg,rgba(8,15,21,.92),rgba(8,15,21,.52))}
+@media(max-width:900px){body.if-superadmin .sa-grid{grid-template-columns:1fr}}
+@media(prefers-reduced-motion:reduce){.if-install-svg *{animation:none!important}}
