@@ -264,3 +264,75 @@ body.admin-mode .wrap>.nav{backdrop-filter:blur(18px) saturate(135%)!important}
 @media(prefers-reduced-motion:reduce){
  body::after,body::before{animation:none!important}
 }
+
+
+/* Reference-inspired interaction system: warm circuitry, orange energy and tactile UI. */
+:root{
+ --if-glow:rgba(255,116,54,.22);
+ --if-glow-strong:rgba(255,126,62,.42);
+ --if-motion:cubic-bezier(.18,.72,.22,1);
+}
+.card,.section.card,.break-card,.stat-card,.admin-module-card,.cp-card,.project-card,
+.sa-card,.admin-detail-bar,.metric-card{
+ position:relative;isolation:isolate;overflow:hidden;
+ transition:transform .28s var(--if-motion),border-color .28s var(--if-motion),box-shadow .28s var(--if-motion),background-color .28s var(--if-motion)!important;
+}
+.card::before,.section.card::before,.break-card::before,.stat-card::before,.admin-module-card::before,
+.cp-card::before,.project-card::before,.sa-card::before,.admin-detail-bar::before,.metric-card::before{
+ content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;opacity:0;
+ background:radial-gradient(360px circle at var(--if-pointer-x,50%) var(--if-pointer-y,50%),rgba(255,124,62,.15),transparent 62%);
+ transition:opacity .28s var(--if-motion);
+}
+.card::after,.section.card::after,.break-card::after,.stat-card::after,.admin-module-card::after,
+.cp-card::after,.project-card::after,.sa-card::after,.metric-card::after{
+ content:"";position:absolute;left:-65%;top:0;width:42%;height:1px;pointer-events:none;
+ background:linear-gradient(90deg,transparent,rgba(255,166,112,.95),transparent);
+ opacity:0;transition:opacity .2s ease;
+}
+.card:hover,.section.card:hover,.break-card:hover,.stat-card:hover,.admin-module-card:hover,
+.cp-card:hover,.project-card:hover,.sa-card:hover,.metric-card:hover{
+ transform:translateY(-4px);border-color:rgba(255,133,75,.48)!important;
+ box-shadow:0 16px 42px rgba(0,0,0,.28),0 0 24px rgba(255,112,55,.08)!important;
+}
+.card:hover::before,.section.card:hover::before,.break-card:hover::before,.stat-card:hover::before,
+.admin-module-card:hover::before,.cp-card:hover::before,.project-card:hover::before,
+.sa-card:hover::before,.metric-card:hover::before{opacity:1}
+.card:hover::after,.section.card:hover::after,.break-card:hover::after,.stat-card:hover::after,
+.admin-module-card:hover::after,.cp-card:hover::after,.project-card:hover::after,
+.sa-card:hover::after,.metric-card:hover::after{opacity:1;animation:if-energy-sweep 1.15s var(--if-motion) both}
+@keyframes if-energy-sweep{from{left:-65%}to{left:130%}}
+button,.btn,.primary-btn,.break-btn,.sa-btn,.nav-link,.nav button,.logout-btn{
+ position:relative;overflow:hidden;
+ transition:transform .2s var(--if-motion),box-shadow .2s var(--if-motion),border-color .2s var(--if-motion),background-color .2s var(--if-motion)!important;
+}
+button:not(:disabled):hover,.btn:not(:disabled):hover,.primary-btn:not(:disabled):hover,
+.break-btn:not(:disabled):hover,.sa-btn:not(:disabled):hover,.nav-link:hover,.nav button:hover{
+ transform:translateY(-2px);box-shadow:0 7px 22px rgba(255,113,56,.17),0 0 0 1px rgba(255,137,78,.2);
+}
+button:not(:disabled):active,.btn:not(:disabled):active,.primary-btn:not(:disabled):active,
+.break-btn:not(:disabled):active,.sa-btn:not(:disabled):active,.nav-link:active,.nav button:active{transform:translateY(0) scale(.985)}
+input,select,textarea{
+ transition:border-color .2s var(--if-motion),box-shadow .2s var(--if-motion),background-color .2s var(--if-motion)!important;
+}
+input:focus,select:focus,textarea:focus{
+ outline:none!important;border-color:rgba(255,133,75,.78)!important;
+ box-shadow:0 0 0 3px rgba(255,113,56,.13),0 0 20px rgba(255,113,56,.08)!important;
+}
+a:not(.nav-link){transition:color .2s ease,text-shadow .2s ease}
+a:not(.nav-link):hover{text-shadow:0 0 14px rgba(255,142,88,.38)}
+.if-reveal{opacity:0;transform:translateY(14px);transition:opacity .55s var(--if-motion),transform .55s var(--if-motion)}
+.if-reveal.if-visible{opacity:1;transform:translateY(0)}
+.if-circuit-mark{position:absolute;right:14px;top:14px;width:34px;height:34px;opacity:.22;pointer-events:none}
+.if-circuit-mark path,.if-circuit-mark circle{stroke:var(--if-accent-2);stroke-width:1.2;fill:none}
+.login-shell{
+ background:rgba(15,18,25,.94)!important;color:#f4f2ef!important;
+ border:1px solid rgba(255,132,75,.2)!important;
+ box-shadow:0 24px 70px rgba(0,0,0,.42),0 0 36px rgba(255,113,56,.09)!important;
+}
+.login-shell input:focus{border-color:rgba(255,133,75,.78)!important}
+@media(prefers-reduced-motion:reduce){
+ .if-reveal{opacity:1;transform:none;transition:none}
+ .card,.section.card,.break-card,.stat-card,.admin-module-card,.cp-card,.project-card,.sa-card,.metric-card,
+ button,.btn,.primary-btn,.break-btn,.sa-btn,.nav-link,.nav button{transition:none!important}
+ .card:hover,.section.card:hover,.break-card:hover,.stat-card:hover,.admin-module-card:hover,.cp-card:hover,.project-card:hover,.sa-card:hover,.metric-card:hover{transform:none}
+}
