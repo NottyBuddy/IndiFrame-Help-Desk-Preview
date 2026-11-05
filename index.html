@@ -153,25 +153,55 @@
   </style>
   <link rel="stylesheet" href="portal-theme.css?v=cinematic-orange-20261104">
 </head>
-<body> <main class="login-shell">
-    <h1>IndiFrame Help Desk</h1>
-    <p class="subtitle">Employee Login Portal</p>
-
-    <form id="loginForm" novalidate>
-      <div class="field">
-        <label for="employeeId">Employee ID</label>
-        <input id="employeeId" name="employeeId" autocomplete="username" placeholder="Enter employee ID" required>
+<body class="if-login-page">
+  <main class="if-login-layout">
+    <section class="if-login-visual" aria-label="IndiFrame window and door installation">
+      <div class="if-visual-top"><span class="if-brand-mark">IF</span><span>INDIFRAME <i>·</i> ARCHITECTURAL SYSTEMS</span><span class="if-live"><b></b> INSTALLATION PROCESS</span></div>
+      <div class="if-install-scene">
+        <div class="if-scene-grid"></div>
+        <svg class="if-install-svg" viewBox="0 0 760 560" role="img" aria-label="Animated window and door frame installation illustration">
+          <defs>
+            <linearGradient id="frameMetal" x1="0" x2="1" y1="0" y2="1"><stop stop-color="#d8e7ec"/><stop offset=".45" stop-color="#8da7b4"/><stop offset="1" stop-color="#f4a16b"/></linearGradient>
+            <linearGradient id="glassTone" x1="0" x2="1" y1="0" y2="1"><stop stop-color="#8ed4e8" stop-opacity=".32"/><stop offset="1" stop-color="#f7a06b" stop-opacity=".08"/></linearGradient>
+            <filter id="softGlow"><feGaussianBlur stdDeviation="7"/></filter>
+          </defs>
+          <ellipse cx="370" cy="472" rx="280" ry="25" fill="#f39a63" opacity=".12" filter="url(#softGlow)"/>
+          <g class="if-window-unit">
+            <rect x="90" y="88" width="340" height="250" rx="5" fill="none" stroke="#f59b66" stroke-width="2" stroke-dasharray="7 8" opacity=".55"/>
+            <rect class="if-frame-outer" x="112" y="108" width="296" height="210" rx="3" fill="#17242b" stroke="url(#frameMetal)" stroke-width="13"/>
+            <rect x="128" y="124" width="264" height="178" fill="url(#glassTone)" stroke="#9dc9d6" stroke-width="2"/>
+            <path d="M260 124V302M128 213H392" stroke="#b8d4dc" stroke-width="8"/>
+            <path d="M144 140L240 140M280 286L376 286" stroke="#fff" stroke-opacity=".28" stroke-width="2"/>
+            <circle cx="382" cy="218" r="4" fill="#f6a16b"/>
+          </g>
+          <g class="if-door-unit">
+            <rect x="478" y="66" width="190" height="390" rx="4" fill="none" stroke="#f59b66" stroke-width="2" stroke-dasharray="7 8" opacity=".5"/>
+            <rect class="if-door-frame" x="495" y="84" width="156" height="356" rx="3" fill="#17242b" stroke="url(#frameMetal)" stroke-width="13"/>
+            <rect x="511" y="100" width="124" height="324" fill="url(#glassTone)" stroke="#9dc9d6" stroke-width="2"/>
+            <path d="M522 112H624V412H522Z" fill="none" stroke="#c6d9dc" stroke-opacity=".28" stroke-width="2"/>
+            <circle cx="616" cy="270" r="5" fill="#f4a16b"/><path d="M616 270v28" stroke="#f4a16b" stroke-width="3" stroke-linecap="round"/>
+          </g>
+          <g class="if-install-beam"><path d="M82 362H682" stroke="#8bd7e9" stroke-width="2" stroke-dasharray="9 10"/><path d="M370 40V486" stroke="#8bd7e9" stroke-width="1" stroke-dasharray="5 12" opacity=".55"/></g>
+          <g class="if-measure"><path d="M112 72H408M112 64V80M408 64V80M470 60V450M462 60H478M462 450H478" fill="none" stroke="#f4a16b" stroke-width="1.5"/><text x="260" y="58" fill="#f7bd96" font-size="12" text-anchor="middle" letter-spacing="3">PRECISION MEASUREMENT</text></g>
+          <g class="if-spark"><circle cx="92" cy="350" r="4" fill="#ffb47f"/><circle cx="676" cy="92" r="3" fill="#8bd7e9"/><circle cx="452" cy="472" r="3" fill="#ffb47f"/></g>
+        </svg>
+        <div class="if-install-label if-label-window"><span>01</span><b>WINDOW SYSTEM</b><small>Precision frame alignment</small></div>
+        <div class="if-install-label if-label-door"><span>02</span><b>DOOR SYSTEM</b><small>Hardware &amp; final fitting</small></div>
+        <div class="if-install-caption"><span>BUILT AROUND YOUR SPACE</span><h2>Measured precisely.<br><em>Installed beautifully.</em></h2><p>From first measurement to final handover, every detail matters.</p><div class="if-process-track"><i></i><i></i><i></i><i></i><span>MEASURE</span><span>FABRICATE</span><span>INSTALL</span><span>HANDOVER</span></div></div>
       </div>
-
-      <div class="field">
-        <label for="password">Password</label>
-        <input id="password" name="password" type="password" autocomplete="current-password" placeholder="Enter password" required>
+    </section>
+    <section class="if-login-panel">
+      <div class="if-login-brand"><span class="if-brand-mark">IF</span><div><b>IndiFrame</b><small>HELP DESK</small></div></div>
+      <div class="if-login-content"><span class="if-eyebrow">TEAM WORKSPACE · SECURE ACCESS</span><h1>Welcome <em>back.</em></h1><p class="subtitle">Sign in to continue to your workspace.</p>
+        <form id="loginForm" novalidate>
+          <div class="field"><label for="employeeId">Employee ID</label><input id="employeeId" name="employeeId" autocomplete="username" placeholder="Enter your employee ID" required></div>
+          <div class="field"><label for="password">Password</label><input id="password" name="password" type="password" autocomplete="current-password" placeholder="Enter your password" required></div>
+          <button id="loginButton" type="submit">Sign in to workspace <span>↗</span></button>
+          <div id="message" class="message" role="status" aria-live="polite"></div>
+        </form>
       </div>
-
-      <button id="loginButton" type="submit">Login</button>
-      <div id="message" class="message" role="status" aria-live="polite"></div>
-    </form>
-
+      <div class="if-login-footer"><span>INDIFRAME · INTERNAL OPERATIONS</span><span>SECURE EMPLOYEE ACCESS</span></div>
+    </section>
   </main>
 
   <script src="api.js"></script>
